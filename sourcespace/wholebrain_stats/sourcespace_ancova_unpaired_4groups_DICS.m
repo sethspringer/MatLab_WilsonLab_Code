@@ -217,35 +217,112 @@ end
 
 
 
+clear i
+F_Map_condition = zeros(ref_size1);
+F_Map_interaction = zeros(ref_size1);
+F_Map_group = zeros(ref_size1);
 
-tMap = zeros(ref_size1);
-% warning('off','stats:LinearModel:RankDefDesignMat');
-for i = 1:ref_size1(1,1)
-    fprintf('Running X:%d\n',i)
-    for ii = 1:ref_size1(1,2)
-        for iii = 1:ref_size1(1,3)
-            dep = COH_data(:,i,ii,iii);
-            voxelamp_covar = AMP_data(:,i,ii,iii);
-            if sum(dep(:)) == 0 || sum(voxelamp_covar(:)) == 0
-                tMap(i,ii,iii) = 0;
+stat_counter = 1; %Use this to print out the df text file
+%Run the model
+
+progress_bar = waitbar(0,'Performing Statistics... Please Wait...');
+
+tic
+
+for i = 1:ref_size1(1,1)  %Looping through the x dimension
+    %fprintf('Running X:%d out of %d\n',i,ref_size1(1,1))
+    
+    %Progress Bar
+    waitbar(i/(ref_size1(1,1)))
+    
+    for ii = 1:ref_size1(1,2) %Looping through the y dimension
+        for iii = 1:ref_size1(1,3) %Looping through the z dimension
+            if sum(COH_data_cond1(:,i,ii,iii)) == 0 || sum(COH_data_cond2(:,i,ii,iii)) == 0 || sum(AMP_data(:,i,ii,iii)) == 0 
+                F_Map_condition(i,ii,iii) = 0;
+                F_Map_interaction(i,ii,iii) = 0;
             elseif all([i,ii,iii] == voxel_coordinates)
-                tMap(i,ii,iii) = 0;
+                F_Map_condition(i,ii,iii) = 0;
+                F_Map_interaction(i,ii,iii) = 0;
             else
-                pred = [pred_groups,voxelamp_covar,seedamp_covar];
-                model = fitglm(pred,dep);
-                tMap(i,ii,iii) = model.Coefficients.tStat(2,1);
+                %Creating the variables table
+                rm_table = table(COH_data_cond1(:,i,ii,iii),...
+                                 COH_data_cond2(:,i,ii,iii),...
+                                 AMP_data(:,i,ii,iii),...
+                                 seedamp_covar,...
+                                 group,...
+                                 'VariableNames',...
+                                 {'Cond1','Cond2','SourceAmp','SeedAmp','group'});
+            
+                rm_design = table([1 2]','VariableNames',{'Condition'});;
+                rm_model = ranova(fitrm(rm_table, 'Cond1-Cond2~group+SourceAmp+SeedAmp', 'WithinDesign', rm_design));
+                
+                
+                %The position of the F-value of interest depends on the order that factors were entered into the model
+                F_Map_condition(i,ii,iii) = rm_model.F(1);
+                F_Map_interaction(i,ii,iii) = rm_model.F(4);
+                
+                if stat_counter == 1; %only pull df once
+                    
+                    df1 = rm_model.DF(1);
+                    df2 = rm_model.DF(5);
+                    stat_counter = stat_counter + 1; %Use this to print out the df text file
+                    
+                end
+
+                
+                %Now do the main effect of group
+                COH_both = [COH_data_cond1(:,i,ii,iii),COH_data_cond2(:,i,ii,iii)];
+                COH_ave = mean(COH_both,2);
+                
+                rm_table_group_effect = table(COH_ave,...
+                                              AMP_data(:,i,ii,iii),...
+                                              seedamp_covar,...
+                                              group,...
+                                              'VariableNames',...
+                                              {'Cond','SourceAmp','SeedAmp','group'});
+                
+                
+                group_effect_model = fitlm(rm_table_group_effect,'Cond~group+SourceAmp+SeedAmp');
+                
+                F_Map_group(i,ii,iii) = (group_effect_model.Coefficients.tStat(4))^2; %Pull the t-value and sqr it to get the F-value
+                
+                
             end
         end
     end
 end
 
-% save_file = NII_param;
-% save_file.img = tMap;
-% save_file.hdr.dime.glmax = max(tMap(:));
-% save_file.hdr.dime.glmin = min(tMap(:));
 cd(save_path);
-niftiwrite(tMap,strcat(save_name,save_index),nii_info);
-% warning('on','stats:LinearModel:RankDefDesignMat');
+
+df1 = num2str(df1);
+df2 = num2str(df2);
+
+
+close(progress_bar)
+
+
+condition_file_name = strcat('ConditionContrast_DF_',df1,'_',df2);
+group_file_name = strcat('GroupContrast_DF_',df1,'_',df2);
+interaction_file_name = strcat('GroupByCondition_Interaction_DF_',df1,'_',df2);
+
+
+
+
+%Save the condition contrast F-map
+niftiwrite(F_Map_condition,condition_file_name,nii_info);
+
+%Save the group contrast F-map
+niftiwrite(F_Map_group,group_file_name,nii_info);
+
+%Save the interaction F-map
+niftiwrite(F_Map_interaction,interaction_file_name,nii_info);
+
 total_time = toc;
+
+
+fprintf('\nThese stats took %4.2f seconds in total\n\n',total_time)
+
+
+end
 
 
