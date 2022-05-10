@@ -42,7 +42,24 @@ if iscell(NII_param2)
 end
 ref_size2 = size(NII_param2.img);
 
+[FileName1,PathName1,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
+cd(PathName1);
+% Open first NII and extract parameters%
+NII_param1 = load_nii(FileName1{1,1});
+if iscell(NII_param1)
+    NII_param1 = NII_param1{1,1};
+end
+ref_size1 = size(NII_param1.img);
+nii_info = niftiinfo(FileName1{1,1});
 
+[FileName2,PathName2,~] = uigetfile('*.nii','Select Coherence NIIs for Group 2','MultiSelect','on');
+cd(PathName2);
+% Open first NII and extract parameters%
+NII_param2 = load_nii(FileName2{1,1});
+if iscell(NII_param2)
+    NII_param2 = NII_param2{1,1};
+end
+ref_size2 = size(NII_param2.img);
 
 
 
