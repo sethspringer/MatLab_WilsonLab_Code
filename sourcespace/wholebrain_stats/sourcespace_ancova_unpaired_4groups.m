@@ -1,4 +1,4 @@
-function [tMap,total_time] = sourcespace_ancova_unpaired
+function [tMap,total_time] = sourcespace_ancova_unpaired_DICS
 
 [FileName1,PathName1,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
 cd(PathName1);
