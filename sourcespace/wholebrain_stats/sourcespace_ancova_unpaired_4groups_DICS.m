@@ -204,7 +204,7 @@ for i = ((n_groups*2)+1):((n_groups*2)+(n_groups*2))
             AMP_data_cond2(cond2_subject_counter,:,:,:) = AMP_NII.img;
             clear AMP_NII
             
-           seedamp_covar_cond2(cond2_subject_counter,1) = AMP_data_cond2(cond2_subject_counter,voxel_coordinates(1),voxel_coordinates(2),voxel_coordinates(3));
+            seedamp_covar_cond2(cond2_subject_counter,1) = AMP_data_cond2(cond2_subject_counter,voxel_coordinates(1),voxel_coordinates(2),voxel_coordinates(3));
 
             
             loading_counter = loading_counter + 1;
@@ -218,12 +218,15 @@ end
 
 
 clear i
-F_Map_condition = zeros(ref_size1);
-F_Map_interaction = zeros(ref_size1);
-F_Map_group = zeros(ref_size1);
+F_Map_condition = zeros(ref_size(1,:));
+F_Map_interaction = zeros(ref_size(1,:));
+F_Map_group = zeros(ref_size(1,:));
+
+
 
 stat_counter = 1; %Use this to print out the df text file
 %Run the model
+
 
 progress_bar = waitbar(0,'Performing Statistics... Please Wait...');
 
