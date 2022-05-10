@@ -115,7 +115,7 @@ num_per_group(3) = length(FileName_list{5});
 num_per_group(4) = length(FileName_list{7});
 
 
-%Pick up here...
+%Preallocate
 COH_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 COH_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
@@ -135,9 +135,18 @@ for i = 1:(n_groups*2)
     cd(PathName_list{i})
     n_files_to_load = length(FileName_list{i});
     
-    if rem(i, 2) == 0 %if i is even, you are loading in condition 1
+    if rem(i, 2) ~= 0 %if i is odd, you are loading in condition 1
         
-        while loading_counter < n_files_to_load + 1
+        while loading_counter < n_files_to_load + 1;
+            
+            %load in NIIs
+            COH_NII = load_nii(FileName_list{1,i});
+            COH_data_cond1(i,:,:,:) = COH_NII.img;
+            clear COH_NII
+            
+            loading_counter = loading_counter + 1;
+            
+        end
         
         
     else %else, you are loading in condition 2

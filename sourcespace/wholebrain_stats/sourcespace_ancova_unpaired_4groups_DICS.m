@@ -50,7 +50,7 @@ for i = 1:n_messages %this is specific to 4 group DICS
     
     FileName_list{i} = FileName_temp;
     PathName_list{i} = PathName_temp;
-
+    
     
     cd(PathName_temp);
     % Open first NII and extract parameters%
@@ -78,7 +78,7 @@ end
 
 %Collect coordinates in Talairach space and convert to double%
 inputs = {'X', 'Y', 'Z'};
-defaults = {'0', '0', '0'};	
+defaults = {'0', '0', '0'};
 answer = inputdlg(inputs, 'Please Input Talairach Coordinates', 2, defaults,'on');
 [X,Y,Z] = deal(answer{:});
 coord_label = sprintf('X: %s; Y: %s; Z: %s',X,Y,Z);
@@ -105,7 +105,7 @@ voxel_coordinates(3) = round(voxel_coordinates(3)/NII_param.hdr.dime.pixdim(4))+
 %Check that the coordinates are within the NII space%
 if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param.img,1) | voxel_coordinates(1,2) < 0 | voxel_coordinates(1,2) > size(NII_param.img,2) | voxel_coordinates(1,3) < 0 | voxel_coordinates(1,3) > size(NII_param.img,3)
     error('These seed coordinates don''t make sense! Texas Steve!');
-	fprintf('\n');
+    fprintf('\n');
 end
 
 
@@ -126,6 +126,9 @@ AMP_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 pred_groups = [zeros(num_per_group(1),1);ones(num_per_group(2),1);ones(num_per_group(3),1)*-1;ones(num_per_group(4),1)*-2];
 seedamp_covar = zeros(sum(num_per_group),1);
 
+cond1_subject_counter = 1;
+cond2_subject_counter = 1;
+
 
 %Load in all COH data
 for i = 1:(n_groups*2)
@@ -135,21 +138,34 @@ for i = 1:(n_groups*2)
     cd(PathName_list{i})
     n_files_to_load = length(FileName_list{i});
     
-    if rem(i, 2) == 0 %if i is even, you are loading in condition 1
+    if rem(i, 2) ~= 0 %if i is odd, you are loading in condition 1
         
         while loading_counter < n_files_to_load + 1;
             
             %load in NIIs
-            COH_NII = load_nii(FileName_list{1,i});
-            COH_data(i,:,:,:) = COH_NII.img;
+            COH_NII = load_nii(FileName_list{i}{loading_counter});
+            COH_data_cond1(cond1_subject_counter,:,:,:) = COH_NII.img;
             clear COH_NII
+            
+            loading_counter = loading_counter + 1;
+            cond1_subject_counter = cond1_subject_counter + 1;
             
         end
         
         
     else %else, you are loading in condition 2
         
-        
+        while loading_counter < n_files_to_load + 1;
+            
+            %load in NIIs
+            COH_NII = load_nii(FileName_list{i}{loading_counter});
+            COH_data_cond2(cond2_subject_counter,:,:,:) = COH_NII.img;
+            clear COH_NII
+            
+            loading_counter = loading_counter + 1;
+            cond2_subject_counter = cond2_subject_counter + 1;
+            
+        end
         
     end
     
@@ -165,7 +181,7 @@ end
 
 
 
- 
+
 cd(PathName1);
 for i = 1:size(FileName1,2)
     COH_NII = load_nii(FileName1{1,i});
@@ -256,7 +272,7 @@ end
 %     fclose(fid);
 %     seedamp_covar = [seedamp1;seedamp2];
 % end
-% 
+%
 % if ~exist('SeedAmp1File','var') || ~exist('SeedAmp2File','var')
 %     input_titles = {'Seed AMP G1','Seed AMP G2'};
 %     default = {'',''};
@@ -284,7 +300,7 @@ for i = 1:ref_size1(1,1)
         end
     end
 end
- 
+
 % save_file = NII_param;
 % save_file.img = tMap;
 % save_file.hdr.dime.glmax = max(tMap(:));
