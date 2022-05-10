@@ -115,6 +115,8 @@ AMP_data = zeros([(size(FileName3,2)+size(FileName4,2)+size(FileName6,2)+size(Fi
 pred_groups = [zeros(size(FileName1,2),1);ones(size(FileName2,2),1);ones(size(FileName5,2),1)*-1;ones(size(FileName7,2),1)*-2];
 seedamp_covar = zeros(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2),1);
 
+
+
 cd(PathName1);
 for i = 1:size(FileName1,2)
     COH_NII = load_nii(FileName1{1,i});
