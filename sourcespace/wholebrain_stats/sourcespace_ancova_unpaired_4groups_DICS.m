@@ -41,9 +41,9 @@ uigetfile_message{14} = 'Select Amplitude NIIs for Group 3 Condition 2';
 uigetfile_message{15} = 'Select Amplitude NIIs for Group 4 Condition 1';
 uigetfile_message{16} = 'Select Amplitude NIIs for Group 4 Condition 2';
 
+n_messages = length(uigetfile_message);
 
-
-for i = 1:16 %this is specific to 4 group DICS
+for i = 1:n_messages %this is specific to 4 group DICS
     
     [FileName_temp,PathName_temp,~] = uigetfile('*.nii',uigetfile_message{i},'MultiSelect','on');
     
@@ -53,12 +53,12 @@ for i = 1:16 %this is specific to 4 group DICS
     
     cd(PathName_temp);
     % Open first NII and extract parameters%
-    NII_param = load_nii(FileName_list{1}{1}); %Double {} because its a cell array of cell arrays
+    NII_param = load_nii(FileName_list{i}{1}); %Double {} because its a cell array of cell arrays
     if iscell(NII_param)
         NII_param = NII_param{1,1};
     end
-    ref_size(i) = size(NII_param.img);
-    nii_info = niftiinfo(FileName_list{1}{1});
+    ref_size(i,:) = size(NII_param.img);
+    nii_info = niftiinfo(FileName_list{i}{1});
     
     
     clear FileName_temp PathName_temp
