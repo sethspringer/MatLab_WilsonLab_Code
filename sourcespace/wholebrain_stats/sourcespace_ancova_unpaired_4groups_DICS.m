@@ -124,11 +124,12 @@ AMP_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
 
 pred_groups = [zeros(num_per_group(1),1);ones(num_per_group(2),1);ones(num_per_group(3),1)*-1;ones(num_per_group(4),1)*-2];
-seedamp_covar = zeros(sum(num_per_group),1);
+seedamp_covar_cond1 = zeros(sum(num_per_group),1);
+seedamp_covar_cond2 = zeros(sum(num_per_group),1);
+
 
 cond1_subject_counter = 1;
 cond2_subject_counter = 1;
-
 
 %Load in all COH data
 for i = 1:(n_groups*2)
@@ -151,8 +152,6 @@ for i = 1:(n_groups*2)
             cond1_subject_counter = cond1_subject_counter + 1;
             
         end
-        
-        
     else %else, you are loading in condition 2
         
         while loading_counter < n_files_to_load + 1;
@@ -166,119 +165,58 @@ for i = 1:(n_groups*2)
             cond2_subject_counter = cond2_subject_counter + 1;
             
         end
-        
     end
+end
+
+
+%Now load in amp NIIs
+cond1_subject_counter = 1;
+cond2_subject_counter = 1;
+
+for i = ((n_groups*2)+1):((n_groups*2)+(n_groups*2))
     
+    loading_counter = 1;
     
+    cd(PathName_list{i})
+    n_files_to_load = length(FileName_list{i});
     
-    
-    
-    
-    
+    if rem(i, 2) ~= 0 %if i is odd, you are loading in condition 1
+        
+        while loading_counter < n_files_to_load + 1;
+            
+            %load in NIIs
+            AMP_NII = load_nii(FileName_list{i}{loading_counter});
+            AMP_data_cond1(cond1_subject_counter,:,:,:) = AMP_NII.img;
+            clear AMP_NII
+            
+            seedamp_covar_cond1(cond1_subject_counter,1) = AMP_data_cond1(cond1_subject_counter,voxel_coordinates(1),voxel_coordinates(2),voxel_coordinates(3));
+            
+            loading_counter = loading_counter + 1;
+            cond1_subject_counter = cond1_subject_counter + 1;
+            
+        end
+    else %else, you are loading in condition 2
+        
+        while loading_counter < n_files_to_load + 1;
+            
+            %load in NIIs
+            AMP_NII = load_nii(FileName_list{i}{loading_counter});
+            AMP_data_cond2(cond2_subject_counter,:,:,:) = AMP_NII.img;
+            clear AMP_NII
+            
+           seedamp_covar_cond2(cond2_subject_counter,1) = AMP_data_cond2(cond2_subject_counter,voxel_coordinates(1),voxel_coordinates(2),voxel_coordinates(3));
+
+            
+            loading_counter = loading_counter + 1;
+            cond2_subject_counter = cond2_subject_counter + 1;
+            
+        end
+    end
 end
 
 
 
 
-
-
-cd(PathName1);
-for i = 1:size(FileName1,2)
-    COH_NII = load_nii(FileName1{1,i});
-    COH_data(i,:,:,:) = COH_NII.img;
-    clear COH_NII
-end
-
-counter = 1;
-cd(PathName2);
-for i = (size(FileName1,2)+1):(size(FileName1,2)+size(FileName2,2))
-    COH_NII = load_nii(FileName2{1,counter});
-    COH_data(i,:,:,:) = COH_NII.img;
-    clear COH_NII
-    counter = counter+1;
-end
-
-
-counter = 1;
-cd(PathName5);
-for i = (size(FileName1,2)+size(FileName2,2)+1):(size(FileName1,2)+size(FileName2,2)+size(FileName5,2))
-    COH_NII = load_nii(FileName5{1,counter});
-    COH_data(i,:,:,:) = COH_NII.img;
-    clear COH_NII
-    counter = counter+1;
-end
-counter = 1;
-cd(PathName7);
-for i = (size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+1):(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2))
-    COH_NII = load_nii(FileName7{1,counter});
-    COH_data(i,:,:,:) = COH_NII.img;
-    clear COH_NII
-    counter = counter+1;
-end
-
-cd(PathName3);
-for i = 1:size(FileName3,2)
-    AMP_NII = load_nii(FileName3{1,i});
-    AMP_data(i,:,:,:) = AMP_NII.img;
-    seedamp_covar(i,1) = AMP_data(i,voxel_coordinates(1,1), voxel_coordinates(1,2), voxel_coordinates(1,3));
-    clear AMP_NII
-end
-
-counter = 1;
-cd(PathName4);
-for i = (size(FileName3,2)+1):(size(FileName3,2)+size(FileName4,2))
-    AMP_NII = load_nii(FileName4{1,counter});
-    AMP_data(i,:,:,:) = AMP_NII.img;
-    seedamp_covar(i,1) = AMP_data(i,voxel_coordinates(1,1), voxel_coordinates(1,2), voxel_coordinates(1,3));
-    clear AMP_NII
-    counter = counter+1;
-end
-
-
-counter = 1;
-cd(PathName6);
-for i = (size(FileName3,2)+size(FileName4,2)+1):(size(FileName3,2)+size(FileName4,2)+size(FileName6,2))
-    AMP_NII = load_nii(FileName6{1,counter});
-    AMP_data(i,:,:,:) = AMP_NII.img;
-    seedamp_covar(i,1) = AMP_data(i,voxel_coordinates(1,1), voxel_coordinates(1,2), voxel_coordinates(1,3));
-    clear AMP_NII
-    counter = counter+1;
-end
-
-counter = 1;
-cd(PathName8);
-for i = (size(FileName3,2)+size(FileName4,2)+1)+size(FileName6,2):(size(FileName3,2)+size(FileName4,2)+size(FileName6,2)+size(FileName8,2))
-    AMP_NII = load_nii(FileName8{1,counter});
-    AMP_data(i,:,:,:) = AMP_NII.img;
-    seedamp_covar(i,1) = AMP_data(i,voxel_coordinates(1,1), voxel_coordinates(1,2), voxel_coordinates(1,3));
-    clear AMP_NII
-    counter = counter+1;
-end
-
-
-
-% seedamp_covar = [seedamp1,seedamp2]';
-
-% if ~exist('seedamp_covar','var')
-%     [SeedAmp1File,SeedAmp1Path,~] = uigetfile('*.txt','Select File for Seed Amp for Group 1','MultiSelect','on');
-%     [SeedAmp2File,SeedAmp2Path,~] = uigetfile('*.txt','Select File for Seed Amp for Group 2','MultiSelect','on');
-%     cd(SeedAmp1Path);
-%     fid = fopen(SeedAmp1File,'rt');
-%     seedamp1 = cell2mat(textscan(fid, '%*s %f %*[^\n]','HeaderLines',1));
-%     fclose(fid);
-%     cd(SeedAmp2Path);
-%     fid = fopen(SeedAmp2File,'rt');
-%     seedamp2 = cell2mat(textscan(fid, '%*s %f %*[^\n]','HeaderLines',1));
-%     fclose(fid);
-%     seedamp_covar = [seedamp1;seedamp2];
-% end
-%
-% if ~exist('SeedAmp1File','var') || ~exist('SeedAmp2File','var')
-%     input_titles = {'Seed AMP G1','Seed AMP G2'};
-%     default = {'',''};
-%     answer = inputdlg(input_titles, 'Please Input Seed AMP Data', 2, default,'on');
-%     seedamp_covar = [str2num(answer{1,1});str2num(answer{2,1})];
-% end
 
 tMap = zeros(ref_size1);
 % warning('off','stats:LinearModel:RankDefDesignMat');
