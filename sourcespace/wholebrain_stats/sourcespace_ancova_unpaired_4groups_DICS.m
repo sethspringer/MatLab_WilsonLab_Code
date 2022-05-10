@@ -116,7 +116,7 @@ pred_groups = [zeros(size(FileName1,2),1);ones(size(FileName2,2),1);ones(size(Fi
 seedamp_covar = zeros(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2),1);
 
 
-
+ 
 cd(PathName1);
 for i = 1:size(FileName1,2)
     COH_NII = load_nii(FileName1{1,i});
