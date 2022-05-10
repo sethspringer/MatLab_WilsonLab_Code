@@ -115,7 +115,7 @@ num_per_group(3) = length(FileName_list{5});
 num_per_group(4) = length(FileName_list{7});
 
 
-%Pick up here...
+%Preallocate
 COH_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 COH_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
@@ -139,7 +139,7 @@ for i = 1:(n_groups*2)
         
         while loading_counter < n_files_to_load + 1;
             
-            %pick up here
+            %load in NIIs
             COH_NII = load_nii(FileName_list{1,i});
             COH_data(i,:,:,:) = COH_NII.img;
             clear COH_NII
