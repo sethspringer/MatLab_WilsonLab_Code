@@ -2,19 +2,71 @@ function [tMap,total_time] = sourcespace_ancova_unpaired_DICS
 
 
 %FileName #s and what they are loading in:
-%1. coh cond 1 group 1
+%1.  coh cond 1 group 1
+%2.  coh cond 2 group 1
+%3.  coh cond 1 group 2
+%4.  coh cond 2 group 2
+%5.  coh cond 1 group 3
+%6.  coh cond 2 group 3
+%7.  coh cond 1 group 4
+%8.  coh cond 2 group 4
+%
+%9.  amp cond 1 group 1
+%10. amp cond 2 group 1
+%11. amp cond 1 group 2
+%12. amp cond 2 group 2
+%13. amp cond 1 group 3
+%14. amp cond 2 group 3
+%15. amp cond 1 group 4
+%16. amp cond 2 group 4
 %
 %
-%
-%
-%
-%
-%
-%
-%
-%
-%
-%
+
+
+uigetfile_message{1} = 'Select Coherence NIIs for Group 1 Condition 1'
+uigetfile_message{2} = 'Select Coherence NIIs for Group 1 Condition 2''
+uigetfile_message{3} = 'Select Coherence NIIs for Group 1 Condition 1''
+uigetfile_message{4} = 'Select Coherence NIIs for Group 1 Condition 2''
+uigetfile_message{5} = 'Select Coherence NIIs for Group 1 Condition 1''
+uigetfile_message{6} = 'Select Coherence NIIs for Group 1 Condition 2''
+uigetfile_message{7} = 'Select Coherence NIIs for Group 1 Condition 1''
+uigetfile_message{8} = 'Select Coherence NIIs for Group 1 Condition 2''
+
+uigetfile_message{9}  = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{10} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{11} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{12} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{13} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{14} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{15} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{16} = 'Select Amplitude NIIs for Group 1 Condition 1''
+
+
+
+for i = 1:16 %this is specific to 4 group DICS
+    
+    
+    
+    
+    [FileName,PathName,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
+    
+    
+    
+    cd(PathName);
+    % Open first NII and extract parameters%
+    NII_param = load_nii(FileName{1,1});
+    if iscell(NII_param)
+        NII_param = NII_param{1,1};
+    end
+    ref_size = size(NII_param.img);
+    nii_info = niftiinfo(FileName{1,1});
+    
+    
+end %end of loading for loop
+
+
+
+
 
 
 [FileName1,PathName1,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
@@ -36,25 +88,7 @@ if iscell(NII_param2)
 end
 ref_size2 = size(NII_param2.img);
 
-[FileName5,PathName5,~] = uigetfile('*.nii','Select Coherence NIIs for Group 3','MultiSelect','on');
-cd(PathName5);
-% Open first NII and extract parameters%
-NII_param5 = load_nii(FileName5{1,1});
-if iscell(NII_param5)
-    NII_param5 = NII_param5{1,1};
-end
-ref_size5 = size(NII_param5.img);
-
-[FileName7,PathName7,~] = uigetfile('*.nii','Select Coherence NIIs for Group 4','MultiSelect','on');
-cd(PathName7);
-% Open first NII and extract parameters%
-NII_param7 = load_nii(FileName7{1,1});
-if iscell(NII_param7)
-    NII_param7 = NII_param7{1,1};
-end
-ref_size7 = size(NII_param7.img);
-
-[FileName3,PathName3,~] = uigetfile('*.nii','Select Amp NIIs for Group 1','MultiSelect','on');
+[FileName3,PathName3,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
 cd(PathName3);
 % Open first NII and extract parameters%
 NII_param3 = load_nii(FileName3{1,1});
@@ -62,8 +96,9 @@ if iscell(NII_param3)
     NII_param3 = NII_param3{1,1};
 end
 ref_size3 = size(NII_param3.img);
+nii_info = niftiinfo(FileName3{1,1});
 
-[FileName4,PathName4,~] = uigetfile('*.nii','Select Amp NIIs for Group 2','MultiSelect','on');
+[FileName4,PathName4,~] = uigetfile('*.nii','Select Coherence NIIs for Group 2','MultiSelect','on');
 cd(PathName4);
 % Open first NII and extract parameters%
 NII_param4 = load_nii(FileName4{1,1});
@@ -72,23 +107,23 @@ if iscell(NII_param4)
 end
 ref_size4 = size(NII_param4.img);
 
-[FileName6,PathName6,~] = uigetfile('*.nii','Select Amp NIIs for Group 3','MultiSelect','on');
-cd(PathName6);
-% Open first NII and extract parameters%
-NII_param6 = load_nii(FileName6{1,1});
-if iscell(NII_param6)
-    NII_param6 = NII_param6{1,1};
-end
-ref_size6 = size(NII_param6.img);
 
-[FileName8,PathName8,~] = uigetfile('*.nii','Select Amp NIIs for Group 4','MultiSelect','on');
-cd(PathName8);
-% Open first NII and extract parameters%
-NII_param8 = load_nii(FileName8{1,1});
-if iscell(NII_param8)
-    NII_param8 = NII_param8{1,1};
-end
-ref_size8 = size(NII_param8.img);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if ~isequal(ref_size1,ref_size2,ref_size3,ref_size4,ref_size5,ref_size6,ref_size7,ref_size8)
     error('Volumetric images must be the same dimensions!')

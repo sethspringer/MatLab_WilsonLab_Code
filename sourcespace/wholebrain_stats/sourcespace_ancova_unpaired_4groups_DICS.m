@@ -23,49 +23,47 @@ function [tMap,total_time] = sourcespace_ancova_unpaired_DICS
 %
 
 
-[FileName1,PathName1,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
-cd(PathName1);
-% Open first NII and extract parameters%
-NII_param1 = load_nii(FileName1{1,1});
-if iscell(NII_param1)
-    NII_param1 = NII_param1{1,1};
-end
-ref_size1 = size(NII_param1.img);
-nii_info = niftiinfo(FileName1{1,1});
+uigetfile_message{1} = 'Select Coherence NIIs for Group 1 Condition 1';
+uigetfile_message{2} = 'Select Coherence NIIs for Group 1 Condition 2';
+uigetfile_message{3} = 'Select Coherence NIIs for Group 2 Condition 1';
+uigetfile_message{4} = 'Select Coherence NIIs for Group 2 Condition 2';
+uigetfile_message{5} = 'Select Coherence NIIs for Group 3 Condition 1';
+uigetfile_message{6} = 'Select Coherence NIIs for Group 3 Condition 2';
+uigetfile_message{7} = 'Select Coherence NIIs for Group 4 Condition 1';
+uigetfile_message{8} = 'Select Coherence NIIs for Group 4 Condition 2';
 
-[FileName2,PathName2,~] = uigetfile('*.nii','Select Coherence NIIs for Group 2','MultiSelect','on');
-cd(PathName2);
-% Open first NII and extract parameters%
-NII_param2 = load_nii(FileName2{1,1});
-if iscell(NII_param2)
-    NII_param2 = NII_param2{1,1};
-end
-ref_size2 = size(NII_param2.img);
-
-[FileName1,PathName1,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
-cd(PathName1);
-% Open first NII and extract parameters%
-NII_param1 = load_nii(FileName1{1,1});
-if iscell(NII_param1)
-    NII_param1 = NII_param1{1,1};
-end
-ref_size1 = size(NII_param1.img);
-nii_info = niftiinfo(FileName1{1,1});
-
-[FileName2,PathName2,~] = uigetfile('*.nii','Select Coherence NIIs for Group 2','MultiSelect','on');
-cd(PathName2);
-% Open first NII and extract parameters%
-NII_param2 = load_nii(FileName2{1,1});
-if iscell(NII_param2)
-    NII_param2 = NII_param2{1,1};
-end
-ref_size2 = size(NII_param2.img);
+uigetfile_message{9}  = 'Select Amplitude NIIs for Group 1 Condition 1';
+uigetfile_message{10} = 'Select Amplitude NIIs for Group 1 Condition 2';
+uigetfile_message{11} = 'Select Amplitude NIIs for Group 2 Condition 1';
+uigetfile_message{12} = 'Select Amplitude NIIs for Group 2 Condition 2';
+uigetfile_message{13} = 'Select Amplitude NIIs for Group 3 Condition 1';
+uigetfile_message{14} = 'Select Amplitude NIIs for Group 3 Condition 2';
+uigetfile_message{15} = 'Select Amplitude NIIs for Group 4 Condition 1';
+uigetfile_message{16} = 'Select Amplitude NIIs for Group 4 Condition 2';
 
 
 
+for i = 1:16 %this is specific to 4 group DICS
+    
+    [FileName_temp,PathName_temp,~] = uigetfile('*.nii',uigetfile_message{i},'MultiSelect','on');
+    
+    FileName_list{i} = FileName_temp;
+    PathName_list{i} = PathName_temp;
 
-
-
+    
+    cd(PathName_temp);
+    % Open first NII and extract parameters%
+    NII_param = load_nii(FileName_list{1}{1}); %Double {} because its a cell array of cell arrays
+    if iscell(NII_param)
+        NII_param = NII_param{1,1};
+    end
+    ref_size(i) = size(NII_param.img);
+    nii_info = niftiinfo(FileName_list{1}{1});
+    
+    
+    clear FileName_temp PathName_temp
+    
+end %end of loading for loop
 
 
 
