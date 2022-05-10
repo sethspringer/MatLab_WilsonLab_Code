@@ -42,6 +42,7 @@ uigetfile_message{15} = 'Select Amplitude NIIs for Group 4 Condition 1';
 uigetfile_message{16} = 'Select Amplitude NIIs for Group 4 Condition 2';
 
 n_messages = length(uigetfile_message);
+n_groups = 4;
 
 for i = 1:n_messages %this is specific to 4 group DICS
     
@@ -107,13 +108,61 @@ if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param.img,1) |
 	fprintf('\n');
 end
 
+
+num_per_group(1) = length(FileName_list{1});
+num_per_group(2) = length(FileName_list{3});
+num_per_group(3) = length(FileName_list{5});
+num_per_group(4) = length(FileName_list{7});
+
+
 %Pick up here...
-COH_data = zeros([(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2)),ref_size1]);
-AMP_data = zeros([(size(FileName3,2)+size(FileName4,2)+size(FileName6,2)+size(FileName8,2)),ref_size1]);
-% COH_data = [zeros([size(FileName1,2),ref_size1]);zeros([size(FileName2,2),ref_size2])];
-% AMP_data = [zeros([size(FileName3,2),ref_size3]);zeros([size(FileName4,2),ref_size4])];
-pred_groups = [zeros(size(FileName1,2),1);ones(size(FileName2,2),1);ones(size(FileName5,2),1)*-1;ones(size(FileName7,2),1)*-2];
-seedamp_covar = zeros(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2),1);
+COH_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
+COH_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
+
+AMP_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
+AMP_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
+
+
+pred_groups = [zeros(num_per_group(1),1);ones(num_per_group(2),1);ones(num_per_group(3),1)*-1;ones(num_per_group(4),1)*-2];
+seedamp_covar = zeros(sum(num_per_group),1);
+
+
+%Load in all COH data
+for i = 1:(n_groups*2)
+    
+    loading_counter = 1;
+    
+    cd(PathName_list{i})
+    n_files_to_load = length(FileName_list{i});
+    
+    if rem(i, 2) == 0 %if i is even, you are loading in condition 1
+        
+        while loading_counter < n_files_to_load + 1;
+            
+            %pick up here
+            COH_NII = load_nii(FileName_list{1,i});
+            COH_data(i,:,:,:) = COH_NII.img;
+            clear COH_NII
+            
+        end
+        
+        
+    else %else, you are loading in condition 2
+        
+        
+        
+    end
+    
+    
+    
+    
+    
+    
+    
+end
+
+
+
 
 
  
