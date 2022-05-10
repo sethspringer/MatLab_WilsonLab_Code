@@ -215,9 +215,15 @@ for i = ((n_groups*2)+1):((n_groups*2)+(n_groups*2))
 end
 
 
+%Now subtract across the amp condition??? Actually, maybe sub across amp
+%for the interaction but average them for the main effect of group???
 
 
-clear i
+
+
+
+
+clear i ii iii
 F_Map_condition = zeros(ref_size(1,:));
 F_Map_interaction = zeros(ref_size(1,:));
 F_Map_group = zeros(ref_size(1,:));
@@ -225,21 +231,18 @@ F_Map_group = zeros(ref_size(1,:));
 
 
 stat_counter = 1; %Use this to print out the df text file
+
 %Run the model
-
-
 progress_bar = waitbar(0,'Performing Statistics... Please Wait...');
-
 tic
-
-for i = 1:ref_size1(1,1)  %Looping through the x dimension
+for i = 1:ref_size(1,1)  %Looping through the x dimension
     %fprintf('Running X:%d out of %d\n',i,ref_size1(1,1))
     
     %Progress Bar
-    waitbar(i/(ref_size1(1,1)))
+    waitbar(i/(ref_size(1,1)))
     
-    for ii = 1:ref_size1(1,2) %Looping through the y dimension
-        for iii = 1:ref_size1(1,3) %Looping through the z dimension
+    for ii = 1:ref_size(1,2) %Looping through the y dimension
+        for iii = 1:ref_size(1,3) %Looping through the z dimension
             if sum(COH_data_cond1(:,i,ii,iii)) == 0 || sum(COH_data_cond2(:,i,ii,iii)) == 0 || sum(AMP_data(:,i,ii,iii)) == 0 
                 F_Map_condition(i,ii,iii) = 0;
                 F_Map_interaction(i,ii,iii) = 0;
