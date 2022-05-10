@@ -68,14 +68,14 @@ end %end of loading for loop
 
 
 
-if ~isequal(ref_size1,ref_size2,ref_size3,ref_size4,ref_size5,ref_size6,ref_size7,ref_size8)
+if ~isequal(ref_size(1,:),ref_size(2,:),ref_size(3,:),ref_size(4,:),ref_size(5,:),ref_size(6,:),ref_size(7,:),ref_size(8,:),ref_size(9,:),ref_size(10,:),ref_size(11,:),ref_size(12,:),ref_size(13,:),ref_size(14,:),ref_size(15,:),ref_size(16,:))
     error('Volumetric images must be the same dimensions!')
-elseif ~isequal(size(FileName1),size(FileName3)) || ~isequal(size(FileName2),size(FileName4))||~isequal(size(FileName5),size(FileName6))||~isequal(size(FileName7),size(FileName8))
+elseif ~isequal(length(FileName_list{1}),length(FileName_list{9})) || ~isequal(length(FileName_list{2}),length(FileName_list{10})) || ~isequal(length(FileName_list{3}),length(FileName_list{11})) || ~isequal(length(FileName_list{4}),length(FileName_list{12})) | ~isequal(length(FileName_list{5}),length(FileName_list{13})) || ~isequal(length(FileName_list{6}),length(FileName_list{14})) || ~isequal(length(FileName_list{7}),length(FileName_list{15}))  | ~isequal(length(FileName_list{8}),length(FileName_list{16}))
     error('The same number of files must be loaded!')
 end
 
-%Collect coordinates in Talairach space and convert to double%
 
+%Collect coordinates in Talairach space and convert to double%
 inputs = {'X', 'Y', 'Z'};
 defaults = {'0', '0', '0'};	
 answer = inputdlg(inputs, 'Please Input Talairach Coordinates', 2, defaults,'on');
@@ -88,28 +88,26 @@ Z = str2num(Z);
 voxel_coordinates = [X,Y,Z];
 
 %Open NII and read coordinate space parameters%
-Xstart = NII_param1.hdr.hist.srow_x(4);
-Ystart = NII_param1.hdr.hist.srow_y(4);
-Zstart = NII_param1.hdr.hist.srow_z(4);
+Xstart = NII_param.hdr.hist.srow_x(4);
+Ystart = NII_param.hdr.hist.srow_y(4);
+Zstart = NII_param.hdr.hist.srow_z(4);
 
 voxel_coordinates(1) = voxel_coordinates(1) - Xstart;
 voxel_coordinates(2) = voxel_coordinates(2) - Ystart;
 voxel_coordinates(3) = voxel_coordinates(3) - Zstart;
 
 %Convert voxel coordinates into talairach space (based on voxel size)
-voxel_coordinates(1) = round(voxel_coordinates(1)/NII_param1.hdr.dime.pixdim(2))+1;
-voxel_coordinates(2) = round(voxel_coordinates(2)/NII_param1.hdr.dime.pixdim(3))+1;
-voxel_coordinates(3) = round(voxel_coordinates(3)/NII_param1.hdr.dime.pixdim(4))+1;
+voxel_coordinates(1) = round(voxel_coordinates(1)/NII_param.hdr.dime.pixdim(2))+1;
+voxel_coordinates(2) = round(voxel_coordinates(2)/NII_param.hdr.dime.pixdim(3))+1;
+voxel_coordinates(3) = round(voxel_coordinates(3)/NII_param.hdr.dime.pixdim(4))+1;
 
 %Check that the coordinates are within the NII space%
-if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param1.img,1) | voxel_coordinates(1,2) < 0 | voxel_coordinates(1,2) > size(NII_param1.img,2) | voxel_coordinates(1,3) < 0 | voxel_coordinates(1,3) > size(NII_param1.img,3)
+if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param.img,1) | voxel_coordinates(1,2) < 0 | voxel_coordinates(1,2) > size(NII_param.img,2) | voxel_coordinates(1,3) < 0 | voxel_coordinates(1,3) > size(NII_param.img,3)
     error('These seed coordinates don''t make sense! Texas Steve!');
 	fprintf('\n');
 end
 
-[save_name,save_path,save_index] = uiputfile('*.nii','Please save your NII');
-
-tic
+%Pick up here...
 COH_data = zeros([(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2)),ref_size1]);
 AMP_data = zeros([(size(FileName3,2)+size(FileName4,2)+size(FileName6,2)+size(FileName8,2)),ref_size1]);
 % COH_data = [zeros([size(FileName1,2),ref_size1]);zeros([size(FileName2,2),ref_size2])];
@@ -236,7 +234,7 @@ for i = 1:ref_size1(1,1)
     end
 end
  
-% save_file = NII_param1;
+% save_file = NII_param;
 % save_file.img = tMap;
 % save_file.hdr.dime.glmax = max(tMap(:));
 % save_file.hdr.dime.glmin = min(tMap(:));

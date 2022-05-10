@@ -23,116 +23,59 @@ function [tMap,total_time] = sourcespace_ancova_unpaired_DICS
 %
 
 
-uigetfile_message{1} = 'Select Coherence NIIs for Group 1 Condition 1'
-uigetfile_message{2} = 'Select Coherence NIIs for Group 1 Condition 2''
-uigetfile_message{3} = 'Select Coherence NIIs for Group 1 Condition 1''
-uigetfile_message{4} = 'Select Coherence NIIs for Group 1 Condition 2''
-uigetfile_message{5} = 'Select Coherence NIIs for Group 1 Condition 1''
-uigetfile_message{6} = 'Select Coherence NIIs for Group 1 Condition 2''
-uigetfile_message{7} = 'Select Coherence NIIs for Group 1 Condition 1''
-uigetfile_message{8} = 'Select Coherence NIIs for Group 1 Condition 2''
+uigetfile_message{1} = 'Select Coherence NIIs for Group 1 Condition 1';
+uigetfile_message{2} = 'Select Coherence NIIs for Group 1 Condition 2';
+uigetfile_message{3} = 'Select Coherence NIIs for Group 2 Condition 1';
+uigetfile_message{4} = 'Select Coherence NIIs for Group 2 Condition 2';
+uigetfile_message{5} = 'Select Coherence NIIs for Group 3 Condition 1';
+uigetfile_message{6} = 'Select Coherence NIIs for Group 3 Condition 2';
+uigetfile_message{7} = 'Select Coherence NIIs for Group 4 Condition 1';
+uigetfile_message{8} = 'Select Coherence NIIs for Group 4 Condition 2';
 
-uigetfile_message{9}  = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{10} = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{11} = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{12} = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{13} = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{14} = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{15} = 'Select Amplitude NIIs for Group 1 Condition 1''
-uigetfile_message{16} = 'Select Amplitude NIIs for Group 1 Condition 1''
+uigetfile_message{9}  = 'Select Amplitude NIIs for Group 1 Condition 1';
+uigetfile_message{10} = 'Select Amplitude NIIs for Group 1 Condition 2';
+uigetfile_message{11} = 'Select Amplitude NIIs for Group 2 Condition 1';
+uigetfile_message{12} = 'Select Amplitude NIIs for Group 2 Condition 2';
+uigetfile_message{13} = 'Select Amplitude NIIs for Group 3 Condition 1';
+uigetfile_message{14} = 'Select Amplitude NIIs for Group 3 Condition 2';
+uigetfile_message{15} = 'Select Amplitude NIIs for Group 4 Condition 1';
+uigetfile_message{16} = 'Select Amplitude NIIs for Group 4 Condition 2';
 
+n_messages = length(uigetfile_message);
 
+for i = 1:n_messages %this is specific to 4 group DICS
+    
+    [FileName_temp,PathName_temp,~] = uigetfile('*.nii',uigetfile_message{i},'MultiSelect','on');
+    
+    FileName_list{i} = FileName_temp;
+    PathName_list{i} = PathName_temp;
 
-for i = 1:16 %this is specific to 4 group DICS
     
-    
-    
-    
-    [FileName,PathName,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
-    
-    
-    
-    cd(PathName);
+    cd(PathName_temp);
     % Open first NII and extract parameters%
-    NII_param = load_nii(FileName{1,1});
+    NII_param = load_nii(FileName_list{i}{1}); %Double {} because its a cell array of cell arrays
     if iscell(NII_param)
         NII_param = NII_param{1,1};
     end
-    ref_size = size(NII_param.img);
-    nii_info = niftiinfo(FileName{1,1});
+    ref_size(i,:) = size(NII_param.img);
+    nii_info = niftiinfo(FileName_list{i}{1});
     
+    
+    clear FileName_temp PathName_temp
     
 end %end of loading for loop
 
 
 
 
-
-
-[FileName1,PathName1,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
-cd(PathName1);
-% Open first NII and extract parameters%
-NII_param1 = load_nii(FileName1{1,1});
-if iscell(NII_param1)
-    NII_param1 = NII_param1{1,1};
-end
-ref_size1 = size(NII_param1.img);
-nii_info = niftiinfo(FileName1{1,1});
-
-[FileName2,PathName2,~] = uigetfile('*.nii','Select Coherence NIIs for Group 2','MultiSelect','on');
-cd(PathName2);
-% Open first NII and extract parameters%
-NII_param2 = load_nii(FileName2{1,1});
-if iscell(NII_param2)
-    NII_param2 = NII_param2{1,1};
-end
-ref_size2 = size(NII_param2.img);
-
-[FileName3,PathName3,~] = uigetfile('*.nii','Select Coherence NIIs for Group 1','MultiSelect','on');
-cd(PathName3);
-% Open first NII and extract parameters%
-NII_param3 = load_nii(FileName3{1,1});
-if iscell(NII_param3)
-    NII_param3 = NII_param3{1,1};
-end
-ref_size3 = size(NII_param3.img);
-nii_info = niftiinfo(FileName3{1,1});
-
-[FileName4,PathName4,~] = uigetfile('*.nii','Select Coherence NIIs for Group 2','MultiSelect','on');
-cd(PathName4);
-% Open first NII and extract parameters%
-NII_param4 = load_nii(FileName4{1,1});
-if iscell(NII_param4)
-    NII_param4 = NII_param4{1,1};
-end
-ref_size4 = size(NII_param4.img);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if ~isequal(ref_size1,ref_size2,ref_size3,ref_size4,ref_size5,ref_size6,ref_size7,ref_size8)
+if ~isequal(ref_size(1,:),ref_size(2,:),ref_size(3,:),ref_size(4,:),ref_size(5,:),ref_size(6,:),ref_size(7,:),ref_size(8,:),ref_size(9,:),ref_size(10,:),ref_size(11,:),ref_size(12,:),ref_size(13,:),ref_size(14,:),ref_size(15,:),ref_size(16,:))
     error('Volumetric images must be the same dimensions!')
-elseif ~isequal(size(FileName1),size(FileName3)) || ~isequal(size(FileName2),size(FileName4))||~isequal(size(FileName5),size(FileName6))||~isequal(size(FileName7),size(FileName8))
+elseif ~isequal(length(FileName_list{1}),length(FileName_list{9})) || ~isequal(length(FileName_list{2}),length(FileName_list{10})) || ~isequal(length(FileName_list{3}),length(FileName_list{11})) || ~isequal(length(FileName_list{4}),length(FileName_list{12})) | ~isequal(length(FileName_list{5}),length(FileName_list{13})) || ~isequal(length(FileName_list{6}),length(FileName_list{14})) || ~isequal(length(FileName_list{7}),length(FileName_list{15}))  | ~isequal(length(FileName_list{8}),length(FileName_list{16}))
     error('The same number of files must be loaded!')
 end
 
-%Collect coordinates in Talairach space and convert to double%
 
+%Collect coordinates in Talairach space and convert to double%
 inputs = {'X', 'Y', 'Z'};
 defaults = {'0', '0', '0'};	
 answer = inputdlg(inputs, 'Please Input Talairach Coordinates', 2, defaults,'on');
@@ -145,29 +88,27 @@ Z = str2num(Z);
 voxel_coordinates = [X,Y,Z];
 
 %Open NII and read coordinate space parameters%
-Xstart = NII_param1.hdr.hist.srow_x(4);
-Ystart = NII_param1.hdr.hist.srow_y(4);
-Zstart = NII_param1.hdr.hist.srow_z(4);
+Xstart = NII_param.hdr.hist.srow_x(4);
+Ystart = NII_param.hdr.hist.srow_y(4);
+Zstart = NII_param.hdr.hist.srow_z(4);
 
 voxel_coordinates(1) = voxel_coordinates(1) - Xstart;
 voxel_coordinates(2) = voxel_coordinates(2) - Ystart;
 voxel_coordinates(3) = voxel_coordinates(3) - Zstart;
 
 %Convert voxel coordinates into talairach space (based on voxel size)
-voxel_coordinates(1) = round(voxel_coordinates(1)/NII_param1.hdr.dime.pixdim(2))+1;
-voxel_coordinates(2) = round(voxel_coordinates(2)/NII_param1.hdr.dime.pixdim(3))+1;
-voxel_coordinates(3) = round(voxel_coordinates(3)/NII_param1.hdr.dime.pixdim(4))+1;
+voxel_coordinates(1) = round(voxel_coordinates(1)/NII_param.hdr.dime.pixdim(2))+1;
+voxel_coordinates(2) = round(voxel_coordinates(2)/NII_param.hdr.dime.pixdim(3))+1;
+voxel_coordinates(3) = round(voxel_coordinates(3)/NII_param.hdr.dime.pixdim(4))+1;
 
 %Check that the coordinates are within the NII space%
-if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param1.img,1) | voxel_coordinates(1,2) < 0 | voxel_coordinates(1,2) > size(NII_param1.img,2) | voxel_coordinates(1,3) < 0 | voxel_coordinates(1,3) > size(NII_param1.img,3)
+if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param.img,1) | voxel_coordinates(1,2) < 0 | voxel_coordinates(1,2) > size(NII_param.img,2) | voxel_coordinates(1,3) < 0 | voxel_coordinates(1,3) > size(NII_param.img,3)
     error('These seed coordinates don''t make sense! Texas Steve!');
 	fprintf('\n');
 end
 
-[save_name,save_path,save_index] = uiputfile('*.nii','Please save your NII');
 
-tic
-COH_data = zeros([(size(FileName1,2)+size(FileName2,2)+size(FileName5,2)+size(FileName7,2)),ref_size1]);
+COH_data = zeros([(),ref_size1]);
 AMP_data = zeros([(size(FileName3,2)+size(FileName4,2)+size(FileName6,2)+size(FileName8,2)),ref_size1]);
 % COH_data = [zeros([size(FileName1,2),ref_size1]);zeros([size(FileName2,2),ref_size2])];
 % AMP_data = [zeros([size(FileName3,2),ref_size3]);zeros([size(FileName4,2),ref_size4])];
@@ -293,7 +234,7 @@ for i = 1:ref_size1(1,1)
     end
 end
  
-% save_file = NII_param1;
+% save_file = NII_param;
 % save_file.img = tMap;
 % save_file.hdr.dime.glmax = max(tMap(:));
 % save_file.hdr.dime.glmin = min(tMap(:));
