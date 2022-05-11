@@ -262,7 +262,7 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
                 rm_design = table([1 2]','VariableNames',{'Condition'});;
                 rm_model = ranova(fitrm(rm_table, 'Cond1-Cond2~group+SourceAmp+SeedAmp', 'WithinDesign', rm_design));
                 
-                
+                 
                 %The position of the F-value of interest depends on the order that factors were entered into the model
                 F_Map_condition(i,ii,iii) = rm_model.F(1);
                 F_Map_interaction(i,ii,iii) = rm_model.F(4);
