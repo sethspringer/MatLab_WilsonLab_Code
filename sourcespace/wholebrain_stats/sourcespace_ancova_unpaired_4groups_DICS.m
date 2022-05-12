@@ -143,10 +143,13 @@ COH_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
 AMP_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 AMP_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
+AMP_data_sub   = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
 
 seedamp_covar_cond1 = zeros(sum(num_per_group),1);
 seedamp_covar_cond2 = zeros(sum(num_per_group),1);
+seedamp_covar_sub = zeros(sum(num_per_group),1);
+
 
 
 cond1_subject_counter = 1;
@@ -236,12 +239,9 @@ for i = ((n_groups*2)+1):((n_groups*2)+(n_groups*2))
 end
 
 
-%Now subtract across the amp condition??? Actually, maybe sub across amp
-%for the interaction but average them for the main effect of group???
-
-
-
-
+%Now subtract across the amp seed and source
+AMP_data_sub = AMP_data_cond1 - AMP_data_cond2;
+seedamp_covar_sub = seedamp_covar_cond1 - seedamp_covar_cond2;
 
 
 clear i ii iii
@@ -264,21 +264,23 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
     
     for ii = 1:ref_size(1,2) %Looping through the y dimension
         for iii = 1:ref_size(1,3) %Looping through the z dimension
-            if sum(COH_data_cond1(:,i,ii,iii)) == 0 || sum(COH_data_cond2(:,i,ii,iii)) == 0 || sum(AMP_data(:,i,ii,iii)) == 0 
+            if sum(COH_data_cond1(:,i,ii,iii)) == 0 || sum(COH_data_cond2(:,i,ii,iii)) == 0 || sum(AMP_data_sub(:,i,ii,iii)) == 0 
                 F_Map_condition(i,ii,iii) = 0;
                 F_Map_interaction(i,ii,iii) = 0;
+                F_Map_group(i,ii,iii) = 0;
             elseif all([i,ii,iii] == voxel_coordinates)
                 F_Map_condition(i,ii,iii) = 0;
                 F_Map_interaction(i,ii,iii) = 0;
+                F_Map_group(i,ii,iii) = 0;
             else
 
 
                 %Make sure these variables match 
-                rm_table = table(coh_all_cond1,...
-                                 coh_all_cond2,...
-                                 amp_sub,...
-                                 seedAMP_sub,...
-                                 groups,...
+                rm_table = table(COH_data_cond1(:,i,ii,iii),...
+                                 COH_data_cond2(:,i,ii,iii),...
+                                 AMP_data_sub(:,i,ii,iii),...
+                                 seedamp_covar_sub,...
+                                 group_names_vector,...
                                  'VariableNames',...
                                  {'Cond1','Cond2','SourceAmp','SeedAmp','groups'});
                              
@@ -291,6 +293,8 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
                 F_Map_condition(i,ii,iii) = rm_model.F(1);
                 F_Map_interaction(i,ii,iii) = rm_model.F(4);
                 
+                
+                
                 %between subjects portion
                 model = anova(fitrm(rm_table, 'Cond1-Cond2~groups+SourceAmp+SeedAmp', 'WithinDesign', rm_design));
 
@@ -300,8 +304,16 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
 
                 if stat_counter == 1; %only pull df once
                     
-                    df1 = rm_model.DF(1);
-                    df2 = rm_model.DF(5);
+                    df1_cond = rm_model.DF(1);
+                    df2_cond = rm_model.DF(5);
+                    
+                    df1_group = model.DF(4);
+                    df2_group = model.DF(5);
+                    
+                    df1_interaction = rm_model.DF(4);
+                    df2_interaction = rm_model.DF(5);
+                    
+                    
                     stat_counter = stat_counter + 1; %Use this to print out the df text file
                     
                 end
@@ -313,8 +325,14 @@ end
 
 cd(save_path);
 
-df1 = num2str(df1);
-df2 = num2str(df2);
+df1_cond = num2str(df1_cond);
+df2_cond = num2str(df2_cond);
+
+df1_group = num2str(df1_group);
+df2_group = num2str(df2_group);
+
+df1_interaction = num2str(df1_interaction);
+df2_interaction = num2str(df2_interaction);
 
 
 close(progress_bar)

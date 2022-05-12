@@ -115,17 +115,41 @@ num_per_group(3) = length(FileName_list{5});
 num_per_group(4) = length(FileName_list{7});
 
 
+%now you need to build the group variable column. From my testing, I think
+%it NEEDS to be a cell array of strings, not numbers...
+group_names = {'a','b','c','d'};
+
+position_counter = 1;
+
+for i = 1:length(group_names)
+    
+    for ii = 1:num_per_group(i)
+        
+        group_names_vector(position_counter,1) = group_names{i}; %not sure how to preallocate a cell array...
+        
+        position_counter = position_counter + 1;
+        
+    end
+end
+
+
+
+
+
+
 %Preallocate
 COH_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 COH_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
 AMP_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 AMP_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
+AMP_data_sub   = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
 
-pred_groups = [zeros(num_per_group(1),1);ones(num_per_group(2),1);ones(num_per_group(3),1)*-1;ones(num_per_group(4),1)*-2];
 seedamp_covar_cond1 = zeros(sum(num_per_group),1);
 seedamp_covar_cond2 = zeros(sum(num_per_group),1);
+seedamp_covar_sub = zeros(sum(num_per_group),1);
+
 
 
 cond1_subject_counter = 1;
@@ -215,12 +239,9 @@ for i = ((n_groups*2)+1):((n_groups*2)+(n_groups*2))
 end
 
 
-%Now subtract across the amp condition??? Actually, maybe sub across amp
-%for the interaction but average them for the main effect of group???
-
-
-
-
+%Now subtract across the amp seed and source
+AMP_data_sub = AMP_data_cond1 - AMP_data_cond2;
+seedamp_covar_sub = seedamp_covar_cond1 - seedamp_covar_cond2;
 
 
 clear i ii iii
@@ -243,35 +264,23 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
     
     for ii = 1:ref_size(1,2) %Looping through the y dimension
         for iii = 1:ref_size(1,3) %Looping through the z dimension
-            if sum(COH_data_cond1(:,i,ii,iii)) == 0 || sum(COH_data_cond2(:,i,ii,iii)) == 0 || sum(AMP_data(:,i,ii,iii)) == 0 
+            if sum(COH_data_cond1(:,i,ii,iii)) == 0 || sum(COH_data_cond2(:,i,ii,iii)) == 0 || sum(AMP_data_sub(:,i,ii,iii)) == 0 
                 F_Map_condition(i,ii,iii) = 0;
                 F_Map_interaction(i,ii,iii) = 0;
+                F_Map_group(i,ii,iii) = 0;
             elseif all([i,ii,iii] == voxel_coordinates)
                 F_Map_condition(i,ii,iii) = 0;
                 F_Map_interaction(i,ii,iii) = 0;
+                F_Map_group(i,ii,iii) = 0;
             else
-                %Creating the variables table
+
+
+                %Make sure these variables match 
                 rm_table = table(COH_data_cond1(:,i,ii,iii),...
                                  COH_data_cond2(:,i,ii,iii),...
-                                 AMP_data(:,i,ii,iii),...
-                                 seedamp_covar,...
-                                 group,...
-                                 'VariableNames',...
-                                 {'Cond1','Cond2','SourceAmp','SeedAmp','group'});
-            
-                rm_design = table([1 2]','VariableNames',{'Condition'});;
-                rm_model = ranova(fitrm(rm_table, 'Cond1-Cond2~group+SourceAmp+SeedAmp', 'WithinDesign', rm_design));
-                
-                 
-
-
-
-
-                rm_table = table(coh_all_cond1,...
-                                 coh_all_cond2,...
-                                 amp_sub,...
-                                 seedAMP_sub,...
-                                 groups,...
+                                 AMP_data_sub(:,i,ii,iii),...
+                                 seedamp_covar_sub,...
+                                 group_names_vector,...
                                  'VariableNames',...
                                  {'Cond1','Cond2','SourceAmp','SeedAmp','groups'});
                              
@@ -284,6 +293,8 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
                 F_Map_condition(i,ii,iii) = rm_model.F(1);
                 F_Map_interaction(i,ii,iii) = rm_model.F(4);
                 
+                
+                
                 %between subjects portion
                 model = anova(fitrm(rm_table, 'Cond1-Cond2~groups+SourceAmp+SeedAmp', 'WithinDesign', rm_design));
 
@@ -293,8 +304,16 @@ for i = 1:ref_size(1,1)  %Looping through the x dimension
 
                 if stat_counter == 1; %only pull df once
                     
-                    df1 = rm_model.DF(1);
-                    df2 = rm_model.DF(5);
+                    df1_cond = rm_model.DF(1);
+                    df2_cond = rm_model.DF(5);
+                    
+                    df1_group = model.DF(4);
+                    df2_group = model.DF(5);
+                    
+                    df1_interaction = rm_model.DF(1);
+                    df2_interaction = rm_model.DF(5);
+                    
+                    
                     stat_counter = stat_counter + 1; %Use this to print out the df text file
                     
                 end
