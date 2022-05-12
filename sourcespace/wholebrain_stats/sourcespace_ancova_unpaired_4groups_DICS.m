@@ -338,9 +338,9 @@ df2_interaction = num2str(df2_interaction);
 close(progress_bar)
 
 
-condition_file_name = strcat('ConditionContrast_DF_',df1,'_',df2);
-group_file_name = strcat('GroupContrast_DF_',df1,'_',df2);
-interaction_file_name = strcat('GroupByCondition_Interaction_DF_',df1,'_',df2);
+condition_file_name = strcat('ConditionContrast_DF_',df1_cond,'_',df2_cond);
+group_file_name = strcat('GroupContrast_DF_',df1_group,'_',df2_group);
+interaction_file_name = strcat('GroupByCondition_Interaction_DF_',df1_interaction,'_',df2_interaction);
 
 
 
