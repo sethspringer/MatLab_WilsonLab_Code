@@ -115,6 +115,28 @@ num_per_group(3) = length(FileName_list{5});
 num_per_group(4) = length(FileName_list{7});
 
 
+%now you need to build the group variable column. From my testing, I think
+%it NEEDS to be a cell array of strings, not numbers...
+group_names = {'a','b','c','d'};
+
+position_counter = 1;
+
+for i = 1:length(group_names)
+    
+    for ii = 1:num_per_group(i)
+        
+        group_names_vector(position_counter,1) = group_names{i}; %not sure how to preallocate a cell array...
+        
+        position_counter = position_counter + 1;
+        
+    end
+end
+
+
+
+
+
+
 %Preallocate
 COH_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 COH_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
@@ -123,7 +145,6 @@ AMP_data_cond1 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 AMP_data_cond2 = zeros([(sum(num_per_group)),ref_size(1,:)]);
 
 
-pred_groups = [zeros(num_per_group(1),1);ones(num_per_group(2),1);ones(num_per_group(3),1)*-1;ones(num_per_group(4),1)*-2];
 seedamp_covar_cond1 = zeros(sum(num_per_group),1);
 seedamp_covar_cond2 = zeros(sum(num_per_group),1);
 
