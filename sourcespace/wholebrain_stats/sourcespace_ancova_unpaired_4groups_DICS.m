@@ -1,4 +1,4 @@
-function [tMap,total_time] = sourcespace_ancova_unpaired_DICS
+function sourcespace_ancova_unpaired_4groups_DICS
 
 
 %FileName #s and what they are loading in:
