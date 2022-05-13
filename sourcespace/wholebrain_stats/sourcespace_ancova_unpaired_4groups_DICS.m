@@ -76,6 +76,10 @@ elseif ~isequal(length(FileName_list{1}),length(FileName_list{9})) || ~isequal(l
 end
 
 
+save_path = uigetdir('Select the directory to save the statistical maps');
+
+
+
 %Collect coordinates in Talairach space and convert to double%
 inputs = {'X', 'Y', 'Z'};
 defaults = {'0', '0', '0'};
@@ -101,6 +105,7 @@ voxel_coordinates(3) = voxel_coordinates(3) - Zstart;
 voxel_coordinates(1) = round(voxel_coordinates(1)/NII_param.hdr.dime.pixdim(2))+1;
 voxel_coordinates(2) = round(voxel_coordinates(2)/NII_param.hdr.dime.pixdim(3))+1;
 voxel_coordinates(3) = round(voxel_coordinates(3)/NII_param.hdr.dime.pixdim(4))+1;
+
 
 %Check that the coordinates are within the NII space%
 if voxel_coordinates(1,1) < 0 | voxel_coordinates(1,1) > size(NII_param.img,1) | voxel_coordinates(1,2) < 0 | voxel_coordinates(1,2) > size(NII_param.img,2) | voxel_coordinates(1,3) < 0 | voxel_coordinates(1,3) > size(NII_param.img,3)
