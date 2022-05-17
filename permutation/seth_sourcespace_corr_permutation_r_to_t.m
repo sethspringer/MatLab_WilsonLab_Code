@@ -1,6 +1,6 @@
 function seth_sourcespace_corr_permutation_r_to_t
 
-
+%Though the code says t_values, I have changed them to be f_values...
 
 
 %load the table with all subjects ParID and age...
@@ -94,7 +94,7 @@ for x = 1:ref_size1(1)
                 denom = sqrt(1-r2);
                 
                 
-                t_map(x,y,z) = numer/denom;
+                t_map(x,y,z) = (numer/denom)^2;
                 p_map(x,y,z) = p;
                 
                 
@@ -446,7 +446,7 @@ for permutation_index = 1:n_permutations
                     denom = sqrt(1-r2);
                     
                     
-                    t_map_perm(x,y,z) = numer/denom;
+                    t_map_perm(x,y,z) = (numer/denom)^2;
                     
                     
                     p_map_perm(x,y,z) = p;
