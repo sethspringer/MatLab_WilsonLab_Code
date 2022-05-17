@@ -1,6 +1,6 @@
-function seth_sourcespace_corr_permutation_r_to_t
+function seth_sourcespace_corr_perm_lower_crit_thres
 
-%Though the code says t_values, I have changed them to be f_values...
+
 
 
 %load the table with all subjects ParID and age...
@@ -73,7 +73,6 @@ end
 ages = ages_table.Age;
 r_map = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
 p_map = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
-t_map = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
 sig_masking_map = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
 
 for x = 1:ref_size1(1)
@@ -87,14 +86,6 @@ for x = 1:ref_size1(1)
                 [r,p] = corr(nii_data_vector,ages);
                 
                 r_map(x,y,z) = r;
-                
-                r2 = r^2;
-                
-                numer = r * (sqrt(n_nii-2));
-                denom = sqrt(1-r2);
-                
-                
-                t_map(x,y,z) = (numer/denom)^2;
                 p_map(x,y,z) = p;
                 
                 
@@ -364,7 +355,7 @@ end
 clear i
 for i = 1:n_clusters
     
-    cluster_sum(i) = sum(t_map(sig_masking_map_cluster_building == cluster_labels(i))); %Extract the test stats for each cluster
+    cluster_sum(i) = sum(r_map(sig_masking_map_cluster_building == cluster_labels(i))); %Extract the test stats for each cluster
     
 end
 
@@ -418,7 +409,6 @@ for permutation_index = 1:n_permutations
     
     r_map_perm = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
     p_map_perm = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
-    t_map_perm = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
     sig_masking_map_perm = zeros([ref_size1(1),ref_size1(2),ref_size1(3)]);
     
     
@@ -439,16 +429,6 @@ for permutation_index = 1:n_permutations
                     [r,p] = corr(nii_data_vector,ages_perm);
                     
                     r_map_perm(x,y,z) = r;
-                    
-                    r2 = r^2;
-                    
-                    numer = r * (sqrt(n_nii-2));
-                    denom = sqrt(1-r2);
-                    
-                    
-                    t_map_perm(x,y,z) = (numer/denom)^2;
-                    
-                    
                     p_map_perm(x,y,z) = p;
                     
                     
@@ -717,7 +697,7 @@ for permutation_index = 1:n_permutations
         clear i
         for i = 1:n_clusters
             
-            cluster_sum_perm(i) = sum(t_map_perm(sig_masking_map_perm_cluster_building == cluster_labels_perm(i))); %Extract the test stats for each cluster
+            cluster_sum_perm(i) = sum(r_map_perm(sig_masking_map_perm_cluster_building == cluster_labels_perm(i))); %Extract the test stats for each cluster
             
         end
     end
@@ -742,12 +722,6 @@ end %end of permutation for loop
 delete(wait_bar);
 
 total_time = toc
-
-
-
-
-
-
 
 
 
@@ -797,17 +771,6 @@ for i = 1:size(cluster_sum,2)
     end
 end
 
-
-
-
-%Ernst 2004, Table 3 method
-
-cluster_pvals_test_ernst = zeros(1,size(cluster_sum,2));
-for i = 1:size(cluster_sum,2) 
-        
-        cluster_pvals_test_ernst(1,i) = (nnz(cluster_sum_perm_max_list>cluster_sum(1,i)))/(968+1);
-        
-end
 
 
 
