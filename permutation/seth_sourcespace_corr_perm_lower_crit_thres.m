@@ -96,7 +96,7 @@ for x = 1:ref_size1(1)
 end
 
 %Create a map where you have significant voxels marked
-sig_masking_map(p_map <= 0.05 & p_map > 0 & r_map ~= 0) = 1;
+sig_masking_map(p_map <= 0.025 & p_map > 0 & r_map ~= 0) = 1;
 
 if nnz(sig_masking_map) == 0
     error('There are no significant peaks')
@@ -439,7 +439,7 @@ for permutation_index = 1:n_permutations
     end
     
     %Create a map where you have significant voxels marked
-    sig_masking_map_perm(p_map_perm <= 0.05 & p_map_perm > 0 & r_map_perm ~= 0) = 1;
+    sig_masking_map_perm(p_map_perm <= 0.025 & p_map_perm > 0 & r_map_perm ~= 0) = 1;
     
     if nnz(sig_masking_map_perm) == 0
         continue %if there are no significant voxels for this permutation, go on to the next one.
