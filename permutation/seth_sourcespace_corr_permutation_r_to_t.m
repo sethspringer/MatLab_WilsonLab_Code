@@ -805,7 +805,7 @@ end
 cluster_pvals_test_ernst = zeros(1,size(cluster_sum,2));
 for i = 1:size(cluster_sum,2) 
         
-        cluster_pvals_test_ernst(1,i) = (nnz(cluster_sum_perm_max_list>cluster_sum(1,i)))/(968+1);
+        cluster_pvals_test_ernst(1,i) = (nnz(cluster_sum_perm_max_list>cluster_sum(1,i)))/(n_permutations+1);
         
 end
 
