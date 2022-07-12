@@ -1,4 +1,4 @@
-function seth_NII_average_test_multipleWindows
+function seth_sourcespace_indAverage_multipleWindows
 
 %PURPOSE:           Create individual averages across several windows (similar to NII Wizard but can do up to six averages)
 %
@@ -8,9 +8,7 @@ function seth_NII_average_test_multipleWindows
 %		  
 %                  
 %AUTHOR:            Seth D. Springer, DICoN Lab, UNMC
-%VERSION HISTORY:   06/29/2021  v3: Updated with more comments and added
-%                   separate triggers for left vs. right targets for
-%                   saccade analysis
+%VERSION HISTORY:   03/21/2022  v1: First working version
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
