@@ -59,5 +59,23 @@ lm_cov = fitlm(tbl_cov,'Condition_Ave~Group+Covariate')
 
 
 
+%Group-by-Cov interaction on y_hard
+
+tbl_cov = table(group,y_hard,cov,...
+'VariableNames',{'Group','Condition_Hard','Covariate'});
+
+
+lm_cov = fitlm(tbl_cov,'Condition_Hard~Group*Covariate')
+
+
+
+
+
+
+
+
+
+
+
 
 

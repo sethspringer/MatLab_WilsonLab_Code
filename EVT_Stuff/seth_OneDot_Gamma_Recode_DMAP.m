@@ -48,7 +48,6 @@ end
 iter = size(files,2);
 
 
-output_table = [];
 disp('Processing...');
 
 for i = 1:iter                        %loop throught participants
@@ -75,12 +74,12 @@ for i = 1:iter                        %loop throught participants
     trial_counter_cond4 = 0;
     fixation_counter    = 0;
     
-    trial_order = nan(246,2);
-    trial_order_index = 1;
+    %trial_order = nan(246,2);
+    %trial_order_index = 1;
     
     %RT array
-    RT = nan(24,1); %24 possible correct oddball trials
-    RT_index = 1;
+    %RT = nan(24,1); %24 possible correct oddball trials
+    %RT_index = 1;
     
     
     
